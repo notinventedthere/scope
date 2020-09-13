@@ -8,8 +8,9 @@ import { generate } from '../../domain/random-generation'
 export function Stage() {
     const [scopeTree, setScopeTree] = useState<ScopeTree>(new ScopeTree([], [], [0]))
     useEffect(() => {
-        const tree = generate({ maxLevel: 4, pathHere: [0] })
-        tree && setScopeTree(tree)
+        let tree = generate({ maxLevel: 4, pathHere: [0] })
+        while (!tree) tree = generate({ maxLevel: 4, pathHere: [0] })
+        setScopeTree(tree)
     }, [setScopeTree])
 
     const [vantagePoint, setVantagePoint] = useState<ScopeTreePath>([0])
