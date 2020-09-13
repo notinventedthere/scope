@@ -1,9 +1,11 @@
 import React, { ReactNode, Dispatch, SetStateAction } from 'react'
 import { Box, Heading } from 'grommet'
 import ScopeBox from './ScopeBox'
-import Variable from '../Variable'
+import Variable, { FunctionVariable } from '../Variable'
 import ScopeTree, { ScopeTreePath, VariableType } from '../../../domain/scope-tree'
 import * as context from '../context'
+import { scopeId } from '../../../utils/css'
+import { ScopeConnections } from './ScopeConnections'
 
 export function GlobalScope(props: { scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
     return (
@@ -20,6 +22,7 @@ export function Scope(props: { name?: string, scopeTree: ScopeTree, vantagePoint
         <ScopeBox
             visible={props.scopeTree.lineOfSight(props.vantagePoint)}
             onClick={() => props.setVantagePoint(props.scopeTree.pathHere)}
+            id={scopeId(props.scopeTree.pathHere) + '-scope'}
         >
             {props.name ? <Title>{props.name}</Title> : null}
             <Box
@@ -27,19 +30,22 @@ export function Scope(props: { name?: string, scopeTree: ScopeTree, vantagePoint
                 flex='grow'
                 gap='small'
             >
-                <Box fill gap='small'>
-                    <Variables variables={props.scopeTree.variables} />
-                    <Scopes scopes={props.scopeTree.scopes} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />
-                </Box>
+                <ScopeConnections scope={props.scopeTree}>
+                    <Box fill gap='small'>
+                        <Variables variables={props.scopeTree.variables} scopes={props.scopeTree.scopes} />
+                        <Scopes scopes={props.scopeTree.scopes} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />
+                    </Box>
+                </ScopeConnections>
             </Box>
         </ScopeBox>
     )
 }
 
-function Variables(props: { variables: VariableType[] }) {
+function Variables(props: { variables: VariableType[], scopes: ScopeTree[] }) {
     return (
         <Box direction='row' gap='small' wrap>
             {props.variables.map(v => <Variable icon={v.icon} />)}
+            {props.scopes.map(s => <FunctionVariable id={scopeId(s.pathHere) + '-variable'} />)}
         </Box>
     )
 }

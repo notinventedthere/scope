@@ -39,6 +39,7 @@ export const ScopeBox = styled((props: ScopeBoxProps) => {
             focusIndicator={false}
             className={props.className}
             style={props.style}
+            id={props.id}
         >
             {props.visible ? props.children : <InvisibleScopeContents>{props.children}</InvisibleScopeContents>}
         </Box>
