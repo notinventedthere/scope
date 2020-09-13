@@ -2,7 +2,6 @@ import React, { ReactNode, useState } from 'react'
 import styled from 'styled-components'
 import { Box, Image, Stack } from 'grommet'
 import Machine from '../../../automation.svg'
-import Invisible from '../../../invisible.svg'
 import { useSpring, config, animated } from 'react-spring'
 
 export type ScopeBoxProps = {
@@ -20,10 +19,7 @@ const InvisibleScopeContents = ({ children }: { children: ReactNode }) => (
         >
             {children}
             <Box align='center' justify='center' fill background='light-2' round='small'>
-                <Stack>
-                    <Image width='100em' opacity='50%' src={Machine} />
-                    <Image width='100em' opacity='50%' src={Invisible} alt='Invisible scope' />
-                </Stack>
+                <Image width='100em' opacity='50%' src={Machine} alt='invisible scope' />
             </Box>
         </Stack>
     </Box>
