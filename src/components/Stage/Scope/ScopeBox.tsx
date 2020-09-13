@@ -34,7 +34,7 @@ const InvisibleScopeContents = ({ children }: { children: ReactNode }) => (
 export const ScopeBox = styled((props: ScopeBoxProps) => {
     return (
         <Box
-            pad='medium'
+            pad='small'
             border={{ style: 'solid', size: 'small' }}
             round='small'
             flex='grow'
