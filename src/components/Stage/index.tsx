@@ -22,7 +22,7 @@ export function Stage() {
         [0]
     )
 
-    const [vantagePoint, setVantagePoint] = useState<ScopeTreePath>([0, 1])
+    const [vantagePoint, setVantagePoint] = useState<ScopeTreePath>([0])
 
     return (
         <Context.Provider value={{ vantagePoint, setVantagePoint }}>
