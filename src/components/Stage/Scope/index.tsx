@@ -46,7 +46,7 @@ function Variables(props: { variables: VariableType[] }) {
 
 function Scopes(props: { scopes: ScopeTree[], vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
     return (
-        <Box wrap fill gap='large' direction='row-responsive' pad='large'>
+        <Box wrap fill gap='medium' direction='row-responsive' pad='small'>
             {props.scopes.map(s => <Scope scopeTree={s} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />)}
         </Box>
     )
