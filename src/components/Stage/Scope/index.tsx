@@ -2,7 +2,7 @@ import React, { ReactNode, Dispatch, SetStateAction } from 'react'
 import { Box, Heading } from 'grommet'
 import ScopeBox from './ScopeBox'
 import Variable from '../Variable'
-import ScopeTree, { ScopeTreePath, lineOfSight } from '../../../domain/scope-tree'
+import ScopeTree, { ScopeTreePath, lineOfSight, VariableType } from '../../../domain/scope-tree'
 import * as context from '../context'
 
 export function GlobalScope(props: { scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
@@ -28,15 +28,27 @@ export function Scope(props: { name?: string, scopeTree: ScopeTree, vantagePoint
                 gap='small'
             >
                 <Box fill gap='small'>
-                    <Box direction='row' gap='small' wrap>
-                        {props.scopeTree.variables.map(v => <Variable icon={v.icon} />)}
-                    </Box>
-                    <Box fill gap='large' direction='row-responsive' pad='large'>
-                        {props.scopeTree.scopes.map(s => <Scope scopeTree={s} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />)}
-                    </Box>
+                    <Variables variables={props.scopeTree.variables} />
+                    <Scopes scopes={props.scopeTree.scopes} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />
                 </Box>
             </Box>
         </ScopeBox>
+    )
+}
+
+function Variables(props: { variables: VariableType[] }) {
+    return (
+        <Box direction='row' gap='small' wrap>
+            {props.variables.map(v => <Variable icon={v.icon} />)}
+        </Box>
+    )
+}
+
+function Scopes(props: { scopes: ScopeTree[], vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
+    return (
+        <Box fill gap='large' direction='row-responsive' pad='large'>
+            {props.scopes.map(s => <Scope scopeTree={s} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />)}
+        </Box>
     )
 }
 
