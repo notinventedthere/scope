@@ -15,10 +15,19 @@ export class ScopeTree {
         this.scopes = scopes
         this.pathHere = pathHere
     }
+
+    /**
+     * Whether this part of the tree is in the scope of the vantagePoint
+     */
+    lineOfSight(vantagePoint: ScopeTreePath): boolean {
+        return _.zip(this.pathHere, vantagePoint).every(([x, y]) => x === undefined || x === y)
+    }
+
+    levels(): ScopeTree[][] {
+        const self: ScopeTree = this
+        return [[self]].concat(_.zipWith(this.scopes.map(s => s.levels()), levelParts => levelParts.flat()))
+    }
 }
 
-export function lineOfSight(scopeTree: ScopeTree, vantagePoint: ScopeTreePath): boolean {
-    return _.zip(scopeTree.pathHere, vantagePoint).every(([x, y]) => x === undefined || x === y)
-}
 
 export default ScopeTree

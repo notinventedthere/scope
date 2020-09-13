@@ -2,7 +2,7 @@ import React, { ReactNode, Dispatch, SetStateAction } from 'react'
 import { Box, Heading } from 'grommet'
 import ScopeBox from './ScopeBox'
 import Variable from '../Variable'
-import ScopeTree, { ScopeTreePath, lineOfSight, VariableType } from '../../../domain/scope-tree'
+import ScopeTree, { ScopeTreePath, VariableType } from '../../../domain/scope-tree'
 import * as context from '../context'
 
 export function GlobalScope(props: { scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
@@ -18,7 +18,7 @@ function Title({ children }: { children: ReactNode }) {
 export function Scope(props: { name?: string, scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
     return (
         <ScopeBox
-            visible={lineOfSight(props.scopeTree, props.vantagePoint)}
+            visible={props.scopeTree.lineOfSight(props.vantagePoint)}
             onClick={() => props.setVantagePoint(props.scopeTree.pathHere)}
         >
             {props.name ? <Title>{props.name}</Title> : null}
@@ -46,7 +46,7 @@ function Variables(props: { variables: VariableType[] }) {
 
 function Scopes(props: { scopes: ScopeTree[], vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
     return (
-        <Box fill gap='large' direction='row-responsive' pad='large'>
+        <Box wrap fill gap='large' direction='row-responsive' pad='large'>
             {props.scopes.map(s => <Scope scopeTree={s} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />)}
         </Box>
     )

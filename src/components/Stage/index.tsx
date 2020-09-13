@@ -1,26 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Scope from './Scope'
 import { Box } from 'grommet'
-import { Book, BarChart, Calculator, Car } from 'grommet-icons'
 import ScopeTree, { ScopeTreePath } from '../../domain/scope-tree'
 import { Context } from './context'
+import { generate } from '../../domain/random-generation'
 
 export function Stage() {
-    const scopeTree = new ScopeTree(
-        [{ name: 'calculator', icon: Calculator }],
-        [
-            new ScopeTree(
-                [{ name: 'car', icon: Car }],
-                [
-                    new ScopeTree([{ name: 'bar chart', icon: BarChart }], [], [0, 0, 0]),
-                    new ScopeTree([{ name: 'bar chart', icon: BarChart }], [], [0, 0, 1])
-                ],
-                [0, 0]
-            ),
-            new ScopeTree([{ name: 'book', icon: Book }], [], [0, 1])
-        ],
-        [0]
-    )
+    const [scopeTree, setScopeTree] = useState<ScopeTree>(new ScopeTree([], [], [0]))
+    useEffect(() => {
+        const tree = generate({ maxLevel: 4, pathHere: [0] })
+        tree && setScopeTree(tree)
+    }, [setScopeTree])
 
     const [vantagePoint, setVantagePoint] = useState<ScopeTreePath>([0])
 
@@ -32,7 +22,7 @@ export function Stage() {
                 pad='medium'
                 fill
             >
-                <Scope name='Global' scopeTree={scopeTree} />
+                {scopeTree && <Scope name='Global' scopeTree={scopeTree} />}
             </Box>
         </Context.Provider>
     )
