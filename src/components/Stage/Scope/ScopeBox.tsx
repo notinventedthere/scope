@@ -3,16 +3,14 @@ import styled from 'styled-components'
 import { Box, Image, Stack } from 'grommet'
 import Machine from '../../../automation.svg'
 import Invisible from '../../../invisible.svg'
+import { useSpring, config, animated } from 'react-spring'
 
 export type ScopeBoxProps = {
     visible: boolean,
     children: ReactNode,
     hover?: boolean,
-    onClick?: (event: React.MouseEvent) => void,
-    onMouseOver?: (event: React.MouseEvent) => void,
-    onMouseOut?: (event: React.MouseEvent) => void,
-    className?: string
-}
+    className?: string,
+} & React.HTMLAttributes<HTMLDivElement>
 
 const InvisibleScopeContents = ({ children }: { children: ReactNode }) => (
     <Box fill>
@@ -38,33 +36,36 @@ export const ScopeBox = styled((props: ScopeBoxProps) => {
             border={{ style: 'solid', size: 'small' }}
             round='small'
             flex='grow'
-            onClick={(event: React.MouseEvent) => { event.stopPropagation(); props.onClick && props.onClick(event) }}
-            onMouseOver={(event: React.MouseEvent) => { event.stopPropagation(); props.onMouseOver && props.onMouseOver(event) }}
-            onMouseOut={(event: React.MouseEvent) => { event.stopPropagation(); props.onMouseOut && props.onMouseOut(event) }}
+            onClick={(event: any) => { event.stopPropagation(); props.onClick && props.onClick(event) }}
+            onMouseOver={(event: any) => { event.stopPropagation(); props.onMouseOver && props.onMouseOver(event) }}
+            onMouseOut={(event: any) => { event.stopPropagation(); props.onMouseOut && props.onMouseOut(event) }}
             hoverIndicator={false}
             focusIndicator={false}
             className={props.className}
+            style={props.style}
         >
             {props.visible ? props.children : <InvisibleScopeContents>{props.children}</InvisibleScopeContents>}
         </Box>
     )
 })`
   cursor: default;
-  background: ${props => props.hover ? 'lightblue' : 'white'};
 `
 
 export function ScopeBoxInteractive(props: Omit<ScopeBoxProps, 'hover'>) {
     const [hover, setHover] = useState(false)
+    const animatedProps = useSpring({ from: { brightness: 100 }, brightness: hover ? 98 : 100, config: config.stiff })
 
+    const AnimatedScopeBox = animated(ScopeBox)
     return (
-        <ScopeBox
-            onMouseOver={(event) => { setHover(true); props.onMouseOver && props.onMouseOver(event) }}
-            onMouseOut={(event) => { setHover(false); props.onMouseOut && props.onMouseOut(event) }}
+        <AnimatedScopeBox
+            onMouseOver={(event: any) => { setHover(true); props.onMouseOver && props.onMouseOver(event) }}
+            onMouseOut={(event: any) => { setHover(false); props.onMouseOut && props.onMouseOut(event) }}
             hover={hover}
+            style={{ backgroundColor: animatedProps.brightness.interpolate(b => `hsl(240, 100%, ${b}%)`) }}
             {...props}
         >
             {props.children}
-        </ScopeBox>
+        </AnimatedScopeBox>
     )
 }
 
