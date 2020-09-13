@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Scope from './Scope'
-import Variable from './Variable'
 import { Box } from 'grommet'
 import { Book, BarChart, Calculator, Car } from 'grommet-icons'
 import ScopeTree, { ScopeTreePath } from '../../domain/scope-tree'

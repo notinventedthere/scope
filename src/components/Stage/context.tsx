@@ -1,4 +1,4 @@
-import React, { createContext, useContext, Dispatch, SetStateAction } from 'react'
+import { createContext, useContext, Dispatch, SetStateAction } from 'react'
 import { ScopeTreePath } from '../../domain/scope-tree'
 
 export const Context = createContext<{

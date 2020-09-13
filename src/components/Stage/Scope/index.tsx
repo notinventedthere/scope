@@ -1,4 +1,4 @@
-import React, { ReactNode, ReactEventHandler, Dispatch, SetStateAction } from 'react'
+import React, { ReactNode, Dispatch, SetStateAction } from 'react'
 import { Box, Heading } from 'grommet'
 import ScopeBox from './ScopeBox'
 import Variable from '../Variable'
