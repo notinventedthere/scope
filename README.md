@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/307d83d1-6ab4-4074-baf3-87e20ecc1032/deploy-status)](https://app.netlify.com/sites/learn-scope/deploys)
+
 A work in progress
 
 Deployed at https://learn-scope.netlify.app/
