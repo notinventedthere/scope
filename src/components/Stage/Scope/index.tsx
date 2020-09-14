@@ -44,7 +44,7 @@ export function Scope(props: { name?: string, scopeTree: ScopeTree, vantagePoint
 function Variables(props: { variables: VariableType[], scopes: ScopeTree[] }) {
     return (
         <Box direction='row' gap='small' wrap>
-            <Box pad={{ left: 'xsmall' }}>{props.variables.map(v => <Variable icon={v.icon} />)}</Box>
+            <Box margin={{ left: 'xsmall' }}>{props.variables.map(v => <Variable icon={v.icon} />)}</Box>
             {props.scopes.map(s => <FunctionVariable id={scopeId(s.pathHere) + '-variable'} />)}
         </Box>
     )
