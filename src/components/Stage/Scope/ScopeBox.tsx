@@ -49,15 +49,17 @@ export const ScopeBox = styled((props: ScopeBoxProps) => {
 `
 
 export function ScopeBoxInteractive(props: Omit<ScopeBoxProps, 'hover'>) {
-    const [hover, setHover] = useState(false)
-    const animatedProps = useSpring({ from: { brightness: 100 }, brightness: hover ? 98 : 100, config: config.stiff })
+    const [animatedProps, setSpring] = useSpring(() => ({
+        from: { brightness: 100 },
+        brightness: 100,
+        config: { native: true, ...config.stiff }
+    }))
 
     const AnimatedScopeBox = animated(ScopeBox)
     return (
         <AnimatedScopeBox
-            onMouseOver={(event: any) => { setHover(true); props.onMouseOver && props.onMouseOver(event) }}
-            onMouseOut={(event: any) => { setHover(false); props.onMouseOut && props.onMouseOut(event) }}
-            hover={hover}
+            onMouseOver={(event: any) => { setSpring({ brightness: 98 }); props.onMouseOver && props.onMouseOver(event) }}
+            onMouseOut={(event: any) => { setSpring({ brightness: 100 }); props.onMouseOut && props.onMouseOut(event) }}
             style={{ backgroundColor: animatedProps.brightness.interpolate(b => `hsl(240, 100%, ${b}%)`) }}
             {...props}
         >
