@@ -14,17 +14,18 @@ export function GlobalScope(props: { scopeTree: ScopeTree, vantagePoint: ScopeTr
 }
 
 function Title({ children }: { children: ReactNode }) {
-    return <Box width='100%' align='center' height='10%'><Heading level='2'>{children}</Heading></Box>
+    return <Box width='100%' align='center'><Heading level='3' margin='small'>{children}</Heading></Box>
 }
 
 export function Scope(props: { name?: string, scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
+    const localTitle = props.scopeTree.pathHere === props.vantagePoint && 'Local'
     return (
         <ScopeBox
             visible={props.scopeTree.lineOfSight(props.vantagePoint)}
             onClick={() => props.setVantagePoint(props.scopeTree.pathHere)}
             id={scopeId(props.scopeTree.pathHere) + '-scope'}
         >
-            {props.name ? <Title>{props.name}</Title> : null}
+            <Title>{localTitle || props.name || ''}</Title>
             <Box
                 direction='row-responsive'
                 flex='grow'
