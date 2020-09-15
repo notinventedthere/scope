@@ -6,6 +6,7 @@ import ScopeTree, { ScopeTreePath, VariableType } from '../../../domain/scope-tr
 import * as context from '../context'
 import { scopeId } from '../../../utils/css'
 import { ScopeConnections } from './ScopeConnections'
+import _ from 'lodash'
 
 export function GlobalScope(props: { scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
     return (
@@ -18,14 +19,17 @@ function Title({ children }: { children: ReactNode }) {
 }
 
 export function Scope(props: { name?: string, scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
-    const localTitle = props.scopeTree.pathHere === props.vantagePoint && 'Local'
+    const isVantagePoint = props.scopeTree.pathHere === props.vantagePoint
+    const localTitle = isVantagePoint && 'Local'
+
     return (
         <ScopeBox
             visible={props.scopeTree.lineOfSight(props.vantagePoint)}
             onClick={() => props.setVantagePoint(props.scopeTree.pathHere)}
             id={scopeId(props.scopeTree.pathHere) + '-scope'}
+            hoverable={!isVantagePoint}
         >
-            <Title>{localTitle || props.name || ''}</Title>
+            <Title>{_.compact([props.name, localTitle]).join(' & ')}</Title>
             <Box
                 direction='row-responsive'
                 flex='grow'

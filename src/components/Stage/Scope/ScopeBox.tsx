@@ -7,7 +7,6 @@ import { useSpring, config, animated } from 'react-spring'
 export type ScopeBoxProps = {
     visible: boolean,
     children: ReactNode,
-    hover?: boolean,
     className?: string,
 } & React.HTMLAttributes<HTMLDivElement>
 
@@ -48,7 +47,7 @@ export const ScopeBox = styled((props: ScopeBoxProps) => {
   cursor: default;
 `
 
-export function ScopeBoxInteractive(props: Omit<ScopeBoxProps, 'hover'>) {
+export function ScopeBoxInteractive(props: ScopeBoxProps & { hoverable?: boolean }) {
     const [animatedProps, setSpring] = useSpring(() => ({
         from: { brightness: 100 },
         brightness: 100,
@@ -58,7 +57,7 @@ export function ScopeBoxInteractive(props: Omit<ScopeBoxProps, 'hover'>) {
     const AnimatedScopeBox = animated(ScopeBox)
     return (
         <AnimatedScopeBox
-            onMouseOver={(event: any) => { setSpring({ brightness: 98 }); props.onMouseOver && props.onMouseOver(event) }}
+            onMouseOver={(event: any) => { if (props.hoverable) setSpring({ brightness: 98 }); props.onMouseOver && props.onMouseOver(event) }}
             onMouseOut={(event: any) => { setSpring({ brightness: 100 }); props.onMouseOut && props.onMouseOut(event) }}
             style={{ backgroundColor: animatedProps.brightness.interpolate(b => `hsl(240, 100%, ${b}%)`) }}
             {...props}
