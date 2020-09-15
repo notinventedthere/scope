@@ -19,7 +19,7 @@ const InvisibleScopeContents = ({ children }: { children: ReactNode }) => (
         >
             {children}
             <Box align='center' justify='center' fill background='light-2' round='small'>
-                <Image width='100em' opacity='50%' src={Machine} alt='invisible scope' />
+                <Image height='50%' style={{ maxHeight: '5em' }} opacity='50%' src={Machine} alt='invisible scope' />
             </Box>
         </Stack>
     </Box>
