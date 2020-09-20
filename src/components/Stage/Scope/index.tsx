@@ -4,7 +4,7 @@ import React, { Dispatch, ReactNode, SetStateAction, useState } from 'react'
 import { animated, config, useSpring } from 'react-spring'
 import ScopeTree, { ScopeTreePath, VariableType } from '../../../domain/scope-tree'
 import { scopeId } from '../../../utils/css'
-import AnimatedExpandText from '../../text/AnimatedExpandText'
+import { useAnimatedExpandText } from '../../text/AnimatedExpandText'
 import * as context from '../context'
 import Variable, { FunctionVariable } from '../Variable'
 import { InvisibleScopeContents } from './InvisibleScopeContents'
@@ -86,15 +86,15 @@ export function ScopeContainer(props: { name?: string, scopeTree: ScopeTree }) {
 }
 
 function useClickableHoverExpandText(isVantagePoint: boolean) {
-    const [hovering, setHovering] = useState(false)
+    const [AnimatedExpandText, setShow] = useAnimatedExpandText()
 
     const bindings = {
-        onMouseOver: (event: any) => { event.stopPropagation(); setHovering(true) },
-        onMouseOut: (event: any) => { event.stopPropagation(); setHovering(false) }
+        onMouseOver: (event: any) => { setShow(!isVantagePoint) },
+        onMouseOut: (event: any) => { setShow(false) }
     }
 
     const ClickableHoverExpandText = (props: { children?: ReactNode }) => {
-        return <AnimatedExpandText show={hovering && !isVantagePoint}>{props.children}</AnimatedExpandText>
+        return <AnimatedExpandText>{props.children}</AnimatedExpandText>
     }
     return [ClickableHoverExpandText, bindings] as [typeof ClickableHoverExpandText, typeof bindings]
 }
