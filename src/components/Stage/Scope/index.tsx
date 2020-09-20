@@ -1,4 +1,4 @@
-import React, { ReactNode, Dispatch, SetStateAction } from 'react'
+import React, { ReactNode, Dispatch, SetStateAction, useState } from 'react'
 import { Box, Heading } from 'grommet'
 import ScopeBox from './ScopeBox'
 import Variable, { FunctionVariable } from '../Variable'
@@ -7,6 +7,9 @@ import * as context from '../context'
 import { scopeId } from '../../../utils/css'
 import { ScopeConnections } from './ScopeConnections'
 import _ from 'lodash'
+import AnimatedExpandText from '../../text/AnimatedExpandText'
+import { InvisibleScopeContents } from './InvisibleScopeContents'
+import { animated, config, useSpring } from 'react-spring'
 
 export function GlobalScope(props: { scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
     return (
@@ -21,30 +24,43 @@ function Title({ children }: { children: ReactNode }) {
 export function Scope(props: { name?: string, scopeTree: ScopeTree, vantagePoint: ScopeTreePath, setVantagePoint: Dispatch<SetStateAction<ScopeTreePath>> }) {
     const isVantagePoint = props.scopeTree.pathHere === props.vantagePoint
     const localTitle = isVantagePoint && 'Local'
+    const isVisible = props.scopeTree.lineOfSight(props.vantagePoint)
+
+    const [ClickableHoverExpandText, hoverTextBindings] = useClickableHoverExpandText(isVantagePoint)
+    const [hoverStyleProps, hoverHighlightBindings] = useScopeBoxHover(!isVantagePoint)
+
+    const ScopeContents = (
+        <ScopeConnections scope={props.scopeTree}>
+            <Box fill gap='small'>
+                <Variables variables={props.scopeTree.variables} scopes={props.scopeTree.scopes} />
+                <Scopes scopes={props.scopeTree.scopes} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />
+            </Box>
+        </ScopeConnections>
+    )
 
     return (
-        <ScopeBox
-            visible={props.scopeTree.lineOfSight(props.vantagePoint)}
+        <AnimatedScopeBox
             onClick={() => props.setVantagePoint(props.scopeTree.pathHere)}
             id={scopeId(props.scopeTree.pathHere) + '-scope'}
-            hoverable={!isVantagePoint}
+            {...hoverTextBindings}
+            onMouseOver={(event: any) => { hoverTextBindings.onMouseOver(event); hoverHighlightBindings.onMouseOver(event) }}
+            onMouseOut={(event: any) => { hoverTextBindings.onMouseOut(event); hoverHighlightBindings.onMouseOut(event) }}
+            style={hoverStyleProps}
         >
+            <ClickableHoverExpandText>Enter Scope</ClickableHoverExpandText>
             <Title>{_.compact([props.name, localTitle]).join(' & ')}</Title>
             <Box
                 direction='row-responsive'
                 flex='grow'
                 gap='small'
             >
-                <ScopeConnections scope={props.scopeTree}>
-                    <Box fill gap='small'>
-                        <Variables variables={props.scopeTree.variables} scopes={props.scopeTree.scopes} />
-                        <Scopes scopes={props.scopeTree.scopes} vantagePoint={props.vantagePoint} setVantagePoint={props.setVantagePoint} />
-                    </Box>
-                </ScopeConnections>
+                {isVisible ? ScopeContents : <InvisibleScopeContents>{ScopeContents}</InvisibleScopeContents>}
             </Box>
-        </ScopeBox>
+        </AnimatedScopeBox>
     )
 }
+
+const AnimatedScopeBox = animated(ScopeBox)
 
 function Variables(props: { variables: VariableType[], scopes: ScopeTree[] }) {
     return (
@@ -67,6 +83,36 @@ export function ScopeContainer(props: { name?: string, scopeTree: ScopeTree }) {
     const [vantagePoint, setVantagePoint] = context.useVantagePoint()
 
     return <Scope {...props} vantagePoint={vantagePoint} setVantagePoint={setVantagePoint} />
+}
+
+function useClickableHoverExpandText(isVantagePoint: boolean) {
+    const [hovering, setHovering] = useState(false)
+
+    const bindings = {
+        onMouseOver: (event: any) => { event.stopPropagation(); setHovering(true) },
+        onMouseOut: (event: any) => { event.stopPropagation(); setHovering(false) }
+    }
+
+    const ClickableHoverExpandText = (props: { children?: ReactNode }) => {
+        return <AnimatedExpandText show={hovering && !isVantagePoint}>{props.children}</AnimatedExpandText>
+    }
+    return [ClickableHoverExpandText, bindings] as [typeof ClickableHoverExpandText, typeof bindings]
+}
+
+function useScopeBoxHover(hoverable: boolean) {
+    const [animatedProps, setSpring] = useSpring(() => ({
+        brightness: 100,
+        config: { native: true, ...config.stiff }
+    }))
+
+    const bindings = {
+        onMouseOver: (event: any) => { if (hoverable) setSpring({ brightness: 98 }) },
+        onMouseOut: (event: any) => { setSpring({ brightness: 100 }) }
+    }
+
+    const style = { backgroundColor: animatedProps.brightness.interpolate(b => `hsl(240, 100%, ${b}%)`) }
+
+    return [style, bindings] as [typeof style, typeof bindings]
 }
 
 export default ScopeContainer
