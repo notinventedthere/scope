@@ -1,8 +1,6 @@
-import React, { ReactNode, useState } from 'react'
+import { Box } from 'grommet'
+import React, { ReactNode } from 'react'
 import styled from 'styled-components'
-import { Box, Image, Stack, Text } from 'grommet'
-import { useSpring, config, animated } from 'react-spring'
-import AnimatedExpandText from '../../text/AnimatedExpandText'
 
 export type ScopeBoxProps = {
     children: ReactNode,
